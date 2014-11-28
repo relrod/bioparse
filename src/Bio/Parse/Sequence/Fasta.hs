@@ -15,9 +15,9 @@ data FastaSequence = FastaSequence {
 makeLenses ''FastaSequence
 
 instance BioSeq FastaSequence where
-  seqid = SeqLabel . _id
+  seqid     = SeqLabel . _id
   seqheader = SeqLabel . _header
-  seqdata = SeqData . _data
+  seqdata   = SeqData . _data
   seqlength = fromIntegral . BL.length . _data
 
 --parseHeader :: Parser BL.ByteString
