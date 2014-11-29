@@ -36,7 +36,7 @@ parseHeader = do
 -- | Parses an individual line of the sequence.
 parseSequenceLine :: Parser BL.ByteString
 parseSequenceLine = do
-  nucleotides <- many . choice $ [letter, char '*', char '-']
+  nucleotides <- some . choice $ [letter, char '*', char '-']
   _ <- newline
   return . BL.pack $ nucleotides
 
