@@ -11,8 +11,8 @@ import Data.Typeable
 import Text.Trifecta
 
 data FastaSequence = FastaSequence {
-    _header :: [BL.ByteString]
-  , _data   :: BL.ByteString
+    _header   :: [BL.ByteString]
+  , _sequence :: BL.ByteString
   } deriving (Eq, Ord, Show, Typeable)
 
 makeLenses ''FastaSequence
@@ -20,8 +20,8 @@ makeLenses ''FastaSequence
 instance BioSeq FastaSequence where
   seqid     = SeqLabel . head . _header
   seqheader = SeqLabel . BL.concat . _header
-  seqdata   = SeqData . _data
-  seqlength = fromIntegral . BL.length . _data
+  seqdata   = SeqData . _sequence
+  seqlength = fromIntegral . BL.length . _sequence
 
 -- | Parses the header of a FASTA file.
 --
