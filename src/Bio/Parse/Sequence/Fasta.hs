@@ -26,21 +26,22 @@ instance BioSeq FastaSequence where
 parseHeader :: Parser [BL.ByteString]
 parseHeader = do
   _ <- char '>'
-  (fmap BL.pack) <$> manyTill anyChar newline `sepBy1` char '|'
+  fmap BL.pack <$> manyTill anyChar newline `sepBy1` char '|'
 
-parseNucleotides :: Parser BL.ByteString
-parseNucleotides = do
-  nucleotides <- many . choice $ [letter, char '*', char '-', newline]
+parseSequenceLine :: Parser BL.ByteString
+parseSequenceLine = do
+  nucleotides <- many . choice $ [letter, char '*', char '-']
+  _ <- newline
   return . BL.pack $ nucleotides
 
 parseSequence :: Parser FastaSequence
 parseSequence = do
   h <- parseHeader
-  nucleotides <- parseNucleotides
-  return (FastaSequence h nucleotides)
+  nucleotides <- many parseSequenceLine
+  return (FastaSequence h (BL.concat nucleotides))
 
 parseSequences :: Parser [FastaSequence]
 parseSequences = manyTill parseSequence eof
 
 parseFasta :: String -> Result [FastaSequence]
-parseFasta = parseString (parseSequences) mempty
+parseFasta = parseString parseSequences mempty
