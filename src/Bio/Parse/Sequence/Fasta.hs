@@ -23,25 +23,36 @@ instance BioSeq FastaSequence where
   seqdata   = SeqData . _data
   seqlength = fromIntegral . BL.length . _data
 
+-- | Parses the header of a FASTA file.
+--
+-- The header starts with a @>@ character and gets separated by @|@ (pipe)
+-- characters. When making use if 'Bio.Core.BioSeq', the first word of the
+-- header is used as the 'seqid'.
 parseHeader :: Parser [BL.ByteString]
 parseHeader = do
   _ <- char '>'
   fmap BL.pack <$> manyTill anyChar newline `sepBy1` char '|'
 
+-- | Parses an individual line of the sequence.
 parseSequenceLine :: Parser BL.ByteString
 parseSequenceLine = do
   nucleotides <- many . choice $ [letter, char '*', char '-']
   _ <- newline
   return . BL.pack $ nucleotides
 
+-- | Parses an entire sequence including its header.
 parseSequence :: Parser FastaSequence
 parseSequence = do
   h <- parseHeader
   nucleotides <- many parseSequenceLine
   return (FastaSequence h (BL.concat nucleotides))
 
+-- | Parses many sequences.
 parseSequences :: Parser [FastaSequence]
 parseSequences = manyTill parseSequence eof
 
+-- | Parses sequences from a 'String'.
+--
+--    @parseFasta x = 'parseString' 'parseSequences' 'mempty' x@
 parseFasta :: String -> Result [FastaSequence]
 parseFasta = parseString parseSequences mempty
