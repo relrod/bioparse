@@ -15,6 +15,7 @@ cabal-version:       >= 1.10
 
 library
   exposed-modules:     Bio.Parse.Sequence.Fasta
+                     , Bio.Parse.Sequence.FastQ
   -- other-modules:
   -- other-extensions:
   build-depends:       base >= 4 && < 5
