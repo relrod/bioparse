@@ -57,6 +57,7 @@ benchmark bench
                      , bioparse
                        -- Other parsing libs we're testing against
                      , biofasta >= 0.0.3 && < 0.1
+                     , biofastq >= 0.1 && < 0.2
   default-language:    Haskell2010
   ghc-options:         -O2
                        -fmax-simplifier-iterations=10
