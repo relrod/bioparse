@@ -5,6 +5,7 @@ module Bio.Parse.Sequence.Fasta where
 import Bio.Core.Sequence
 import Control.Applicative
 import Control.Lens
+import qualified Data.ByteString.Char8 as B
 import qualified Data.ByteString.Lazy.Char8 as BL
 import Data.Monoid (mempty)
 import Data.Typeable
@@ -56,3 +57,9 @@ parseSequences = manyTill parseSequence eof
 --    @parseFasta x = 'parseString' 'parseSequences' 'mempty' x@
 parseFasta :: String -> Result [FastaSequence]
 parseFasta = parseString parseSequences mempty
+
+-- | Parses sequences from a strict 'Data.ByteString.ByteString'.
+--
+--    @parseFastaB x = 'parseByteString' 'parseSequences' 'mempty' x@
+parseFastaB :: B.ByteString -> Result [FastaSequence]
+parseFastaB = parseByteString parseSequences mempty
