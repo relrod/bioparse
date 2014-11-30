@@ -9,7 +9,7 @@ pushd "$f/bioparse.git"
   git checkout gh-pages && git rm -rf *
 popd
 mv dist/doc/html/bioparse/* "$f/bioparse.git/"
-cabal bench --benchmark-option="-o$f/bioparse.git/benchmarks.html -j"
+cabal bench --benchmark-option="-o$f/bioparse.git/benchmarks.html"
 pushd "$f/bioparse.git"
   git add -A
   git commit -m "Manual docs deploy."
