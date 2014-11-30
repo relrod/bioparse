@@ -3,6 +3,7 @@
 module Bio.Parse.Sequence.FastQ where
 
 import Bio.Core.Sequence
+import Bio.Parse.Sequence.SequenceParser
 import Control.Applicative
 import Control.Lens
 import qualified Data.ByteString.Char8 as B
@@ -10,7 +11,7 @@ import qualified Data.ByteString.Lazy.Char8 as BL
 import Data.List
 import Data.Monoid (mempty)
 import Data.Typeable
-import Text.Trifecta
+import Text.Trifecta as T
 
 data FastQSequence = FastQSequence {
     _header   :: [BL.ByteString]
@@ -70,10 +71,14 @@ parseSequences = manyTill parseSequence eof
 --
 --    @parseFastQ x = 'parseString' 'parseSequences' 'mempty' x@
 parseFastQ :: String -> Result [FastQSequence]
-parseFastQ = parseString parseSequences mempty
+parseFastQ = T.parseString parseSequences mempty
 
 -- | Parses sequences from a strict 'Data.ByteString.ByteString'.
 --
 --    @parseFastQB x = 'parseByteString' 'parseSequences' 'mempty' x@
 parseFastQB :: B.ByteString -> Result [FastQSequence]
-parseFastQB = parseByteString parseSequences mempty
+parseFastQB = T.parseByteString parseSequences mempty
+
+instance SequenceParser FastQSequence where
+  parseString     = parseFastQ
+  parseByteString = parseFastQB
