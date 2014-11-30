@@ -19,7 +19,7 @@ main :: IO ()
 main =
   defaultMain [
     env setupEnv $ \ ~(ebola's, ebola'bs, _, _) ->
-      bgroup "FASTA/bioparse/parseFasta"
+      bgroup "FASTA/bioparse"
       [
         bench "Bio.Parse.Sequence.Fasta.parseFasta" $ whnf Fasta.parseFasta ebola's
       , bench "Bio.Parse.Sequence.Fasta.parseFastaB" $ whnf Fasta.parseFastaB ebola'bs
