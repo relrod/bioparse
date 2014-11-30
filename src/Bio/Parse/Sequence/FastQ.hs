@@ -5,6 +5,7 @@ module Bio.Parse.Sequence.FastQ where
 import Bio.Core.Sequence
 import Control.Applicative
 import Control.Lens
+import qualified Data.ByteString.Char8 as B
 import qualified Data.ByteString.Lazy.Char8 as BL
 import Data.List
 import Data.Monoid (mempty)
@@ -42,14 +43,12 @@ parseHeader = do
 parseSequenceLine :: Parser BL.ByteString
 parseSequenceLine = do
   nucleotides <- some letter
-  _ <- newline
   return . BL.pack $ nucleotides
 
 -- | Parses the line of quality data.
 parseQualityLine :: Parser BL.ByteString
 parseQualityLine = do
-  qualityChars <- some anyChar
-  _ <- newline
+  qualityChars <- manyTill anyChar newline
   return . BL.pack $ qualityChars
 
 -- | Parses an entire sequence including its header and quality data.
@@ -57,7 +56,9 @@ parseSequence :: Parser FastQSequence
 parseSequence = do
   h <- parseHeader
   nucleotides <- parseSequenceLine
+  _ <- newline
   _ <- char '+'  -- TODO: The header might be repeated here.
+  _ <- newline
   qualityChars <- parseQualityLine
   return (FastQSequence h nucleotides qualityChars)
 
@@ -70,3 +71,9 @@ parseSequences = manyTill parseSequence eof
 --    @parseFastQ x = 'parseString' 'parseSequences' 'mempty' x@
 parseFastQ :: String -> Result [FastQSequence]
 parseFastQ = parseString parseSequences mempty
+
+-- | Parses sequences from a strict 'Data.ByteString.ByteString'.
+--
+--    @parseFastQB x = 'parseByteString' 'parseSequences' 'mempty' x@
+parseFastQB :: B.ByteString -> Result [FastQSequence]
+parseFastQB = parseByteString parseSequences mempty
