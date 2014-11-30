@@ -45,6 +45,5 @@ install:
   - $CABAL configure -flib-Werror --enable-tests $MODE
 
 script:
-  - $CABAL configure -flib-Werror --enable-tests $MODE
   - $CABAL build
   - cabal test --show-details=always --test-option="--color=always"
