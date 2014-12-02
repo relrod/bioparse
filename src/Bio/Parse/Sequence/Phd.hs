@@ -44,10 +44,10 @@ parseNucleotide :: Parser Nucleotide
 parseNucleotide = do
   nucleotide' <- letter
   spaces
-  quality' <- integer
+  quality' <- natural
   spaces
-  traceIdx' <- integer
-  _ <- some newline
+  traceIdx' <- natural
+  _ <- many newline
   return $ Nucleotide nucleotide' quality' traceIdx'
 
 -- | Parse a section of nucleotides from a PHD file.
@@ -55,9 +55,8 @@ parseDnaSection :: Parser [Nucleotide]
 parseDnaSection = do
   _ <- string "BEGIN_DNA"
   _ <- some newline
-  nucleotides <- many parseNucleotide
-  _ <- string "END_DNA"
-  _ <- many newline
+  nucleotides <- manyTill parseNucleotide (try (string "END_DNA"))
+  _ <- some newline
   return nucleotides
 
 -- | Parse a sequence from a PHD file.
