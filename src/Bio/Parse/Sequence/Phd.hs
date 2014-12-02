@@ -63,10 +63,12 @@ parseDnaSection = do
 parseSequence :: Parser PhdSequence
 parseSequence = do
   _ <- string "BEGIN_SEQUENCE"
-  spaces
   identifier' <- BL.pack <$> manyTill anyChar (try newline)
+  _ <- some newline
   sequence' <- parseDnaSection
+  _ <- some newline
   _ <- string "END_SEQUENCE"
+  _ <- some newline
   return $ PhdSequence identifier' sequence'
 
 -- | Parses many sequences.
