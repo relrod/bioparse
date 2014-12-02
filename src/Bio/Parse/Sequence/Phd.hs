@@ -42,33 +42,33 @@ parseComment = do
 -- | Parse a nucleotide line from a PHD file.
 parseNucleotide :: Parser Nucleotide
 parseNucleotide = do
-  nucleotide' <- oneOf "acgt"   -- TODO: Is uppercase valid too?
+  nucleotide' <- letter
   spaces
   quality' <- integer
   spaces
   traceIdx' <- integer
-  _ <- newline
+  _ <- some newline
   return $ Nucleotide nucleotide' quality' traceIdx'
 
 -- | Parse a section of nucleotides from a PHD file.
 parseDnaSection :: Parser [Nucleotide]
 parseDnaSection = do
   _ <- string "BEGIN_DNA"
-  _ <- newline
+  _ <- some newline
   nucleotides <- many parseNucleotide
   _ <- string "END_DNA"
+  _ <- many newline
   return nucleotides
 
 -- | Parse a sequence from a PHD file.
 parseSequence :: Parser PhdSequence
 parseSequence = do
-  _ <- string "BEGIN_SEQUENCE"
+  _ <- string "BEGIN_SEQUENCE "
   identifier' <- BL.pack <$> manyTill anyChar (try newline)
   _ <- some newline
   sequence' <- parseDnaSection
-  _ <- some newline
   _ <- string "END_SEQUENCE"
-  _ <- some newline
+  _ <- many newline
   return $ PhdSequence identifier' sequence'
 
 -- | Parses many sequences.
