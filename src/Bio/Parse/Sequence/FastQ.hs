@@ -58,8 +58,8 @@ parseSequence = do
   h <- parseHeader
   nucleotides <- parseSequenceLine
   _ <- newline
-  _ <- char '+'  -- TODO: The header might be repeated here.
-  _ <- newline
+  _ <- char '+'
+  _ <- manyTill anyChar newline
   qualityChars <- parseQualityLine
   return (FastQSequence h nucleotides qualityChars)
 
