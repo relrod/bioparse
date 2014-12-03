@@ -45,8 +45,8 @@ main =
   , env setupEnv $ \ ~(_, _, _, _, testphd's, testphd'bs) ->
       bgroup "PHD/bioparse"
      [
-        bench "Bio.Parse.Sequence.Phd.parsePhd" $ whnf FastQ.parseFastQ testphd's
-      , bench "Bio.Parse.Sequence.FastQ.parsePhdQB" $ whnf FastQ.parseFastQB testphd'bs
+        bench "Bio.Parse.Sequence.Phd.parsePhd" $ whnf Phd.parsePhd testphd's
+      , bench "Bio.Parse.Sequence.Phd.parsePhdQ" $ whnf Phd.parsePhdB testphd'bs
      ]
   , bgroup "PHD/biophd"
     [
