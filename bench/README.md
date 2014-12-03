@@ -1,11 +1,11 @@
 # NOTICE
 
-The sequence files in this directory are, to the best of my knowledge, in the
+The FASTA files in this directory are, to the best of my knowledge, in the
 public domain. If you feel that any copyright or patent has been infringed
 upon, please contact `Ricky Elrod <ricky@elrod.me>` and I will remove the files
 immediately.
 
-The sequence files in this directory have been obtained from GenBank which
+The FASTA files in this directory have been obtained from GenBank which
 provides the following notice:
 
 ```
@@ -18,3 +18,7 @@ submitted. NCBI is not in a position to assess the validity of such claims, and
 therefore cannot provide comment or unrestricted permission concerning the use,
 copying, or distribution of the information contained in GenBank.
 ```
+
+All other (non-FASTA) sequence files in this directory have been made up and are
+fake. They are hereby released into the public domain, but are probably not
+useful.
