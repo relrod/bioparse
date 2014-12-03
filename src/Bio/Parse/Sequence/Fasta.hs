@@ -47,7 +47,7 @@ parseSequence :: Parser FastaSequence
 parseSequence = do
   h <- parseHeader
   nucleotides <- some parseSequenceLine
-  return (FastaSequence h (BL.concat nucleotides))
+  return $ FastaSequence h (BL.concat nucleotides)
 
 -- | Parses many sequences.
 parseSequences :: Parser [FastaSequence]
