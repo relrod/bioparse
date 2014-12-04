@@ -79,14 +79,14 @@ parseSequences = manyTill parseSequence eof
 -- | Parses sequences from a 'String'.
 --
 --    @parsePhd = 'parsePhdB' . 'B.pack'@
-parsePhd :: String -> A.Result [PhdSequence]
+parsePhd :: String -> Either String [PhdSequence]
 parsePhd = parsePhdB . B.pack
 
 -- | Parses sequences from a strict 'Data.ByteString.ByteString'.
 --
---    @parsePhdB x = 'A.parse' 'parseSequences' x@
-parsePhdB :: B.ByteString -> A.Result [PhdSequence]
-parsePhdB = A.parse parseSequences
+--    @parsePhdB x = 'A.parseOnly' 'parseSequences' x@
+parsePhdB :: B.ByteString -> Either String [PhdSequence]
+parsePhdB = A.parseOnly parseSequences
 
 instance SequenceParser PhdSequence where
   parseString     = parsePhd
