@@ -6,11 +6,12 @@ import Bio.Core.Sequence
 import Bio.Parse.Sequence.SequenceParser
 import Control.Applicative
 import Control.Lens
+import qualified Data.Attoparsec.ByteString as A
 import qualified Data.ByteString.Char8 as B
 import qualified Data.ByteString.Lazy.Char8 as BL
-import Data.Monoid (mempty)
 import Data.Typeable
-import Text.Trifecta as T
+import Text.Parser.Char
+import Text.Parser.Combinators
 
 data FastaSequence = FastaSequence {
     _header   :: [BL.ByteString]
@@ -30,40 +31,40 @@ instance BioSeq FastaSequence where
 -- The header starts with a @>@ character and gets separated by @|@ (pipe)
 -- characters. When making use if 'Bio.Core.BioSeq', the first word of the
 -- header is used as the 'seqid'.
-parseHeader :: Parser [BL.ByteString]
+parseHeader :: A.Parser [BL.ByteString]
 parseHeader = do
   _ <- char '>'
   fmap BL.pack <$> manyTill anyChar newline `sepBy1` char '|'
 
 -- | Parses an individual line of the sequence.
-parseSequenceLine :: Parser BL.ByteString
+parseSequenceLine :: A.Parser BL.ByteString
 parseSequenceLine = do
   nucleotides <- some . choice $ [letter, char '*', char '-']
   _ <- newline
   return . BL.pack $ nucleotides
 
 -- | Parses an entire sequence including its header.
-parseSequence :: Parser FastaSequence
+parseSequence :: A.Parser FastaSequence
 parseSequence = do
   h <- parseHeader
   nucleotides <- some parseSequenceLine
   return $ FastaSequence h (BL.concat nucleotides)
 
 -- | Parses many sequences.
-parseSequences :: Parser [FastaSequence]
+parseSequences :: A.Parser [FastaSequence]
 parseSequences = manyTill parseSequence eof
 
 -- | Parses sequences from a 'String'.
 --
---    @parseFasta x = 'parseString' 'parseSequences' 'mempty' x@
-parseFasta :: String -> Result [FastaSequence]
-parseFasta = T.parseString parseSequences mempty
+--    @parseFasta = 'parseFastaB' . 'B.pack' x@
+parseFasta :: String -> A.Result [FastaSequence]
+parseFasta = parseFastaB . B.pack
 
 -- | Parses sequences from a strict 'Data.ByteString.ByteString'.
 --
---    @parseFastaB x = 'parseByteString' 'parseSequences' 'mempty' x@
-parseFastaB :: B.ByteString -> Result [FastaSequence]
-parseFastaB = T.parseByteString parseSequences mempty
+--    @parseFastaB x = 'parseByteString' 'parseSequences' x@
+parseFastaB :: B.ByteString -> A.Result [FastaSequence]
+parseFastaB = A.parse parseSequences
 
 instance SequenceParser FastaSequence where
   parseString     = parseFasta
