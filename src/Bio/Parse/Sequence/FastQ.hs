@@ -71,13 +71,13 @@ parseSequences = manyTill parseSequence eof
 
 -- | Parses sequences from a 'String'.
 --
---    @parseFastQ x = 'parseString' 'parseSequences' 'mempty' x@
+--    @parseFastQ = 'parseFastQB' . 'B.pack'@
 parseFastQ :: String -> A.Result [FastQSequence]
 parseFastQ = parseFastQB . B.pack
 
 -- | Parses sequences from a strict 'Data.ByteString.ByteString'.
 --
---    @parseFastQB x = 'parseByteString' 'parseSequences' 'mempty' x@
+--    @parseFastQB x = 'A.parse' 'parseSequences' x@
 parseFastQB :: B.ByteString -> A.Result [FastQSequence]
 parseFastQB = A.parse parseSequences
 

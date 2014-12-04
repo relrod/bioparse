@@ -62,7 +62,7 @@ parseFasta = parseFastaB . B.pack
 
 -- | Parses sequences from a strict 'Data.ByteString.ByteString'.
 --
---    @parseFastaB x = 'parseByteString' 'parseSequences' x@
+--    @parseFastaB x = 'A.parse' 'parseSequences' x@
 parseFastaB :: B.ByteString -> A.Result [FastaSequence]
 parseFastaB = A.parse parseSequences
 
