@@ -36,10 +36,17 @@ instance BioSeq PhdSequence where
   seqlength = fromIntegral . length . _sequence
 
 -- | Parse a comment from a PHD file.
+--
+-- We store the comment as a 'BL.ByteString' but we don't actually use it right
+-- now.
 parseComment :: A.Parser BL.ByteString
 parseComment = do
   _ <- string "BEGIN_COMMENT"
   BL.pack <$> manyTill anyChar (try (string "END_COMMENT"))
+
+-- | Treat comments as spaces.
+spacesWithComments :: A.Parser ()
+spacesWithComments = skipSome $ choice [some space >> return (), parseComment >> return ()]
 
 -- | Parse a nucleotide line from a PHD file.
 parseNucleotide :: A.Parser Nucleotide
@@ -74,7 +81,7 @@ parseSequence = do
 
 -- | Parses many sequences.
 parseSequences :: A.Parser [PhdSequence]
-parseSequences = manyTill parseSequence eof
+parseSequences = manyTill (spacesWithComments *> parseSequence <* spacesWithComments) eof
 
 -- | Parses sequences from a 'String'.
 --
