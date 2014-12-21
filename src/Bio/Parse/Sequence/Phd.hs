@@ -1,3 +1,4 @@
+{-# LANGUAGE ConstraintKinds #-}
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE TemplateHaskell #-}
 module Bio.Parse.Sequence.Phd where
@@ -39,17 +40,17 @@ instance BioSeq PhdSequence where
 --
 -- We store the comment as a 'BL.ByteString' but we don't actually use it right
 -- now.
-parseComment :: A.Parser BL.ByteString
+parseComment :: ParseConstraint m => m BL.ByteString
 parseComment = do
   _ <- string "BEGIN_COMMENT"
   BL.pack <$> manyTill anyChar (try (string "END_COMMENT"))
 
 -- | Treat comments as spaces.
-spacesWithComments :: A.Parser ()
+spacesWithComments :: ParseConstraint m => m ()
 spacesWithComments = skipSome $ choice [some space >> return (), parseComment >> return ()]
 
 -- | Parse a nucleotide line from a PHD file.
-parseNucleotide :: A.Parser Nucleotide
+parseNucleotide :: (TokenParsing m, ParseConstraint m) => m Nucleotide
 parseNucleotide = do
   nucleotide' <- letter
   spaces
@@ -60,7 +61,7 @@ parseNucleotide = do
   return $ Nucleotide nucleotide' quality' traceIdx'
 
 -- | Parse a section of nucleotides from a PHD file.
-parseDnaSection :: A.Parser [Nucleotide]
+parseDnaSection :: (TokenParsing m, ParseConstraint m) => m [Nucleotide]
 parseDnaSection = do
   _ <- string "BEGIN_DNA"
   _ <- some newline
@@ -69,7 +70,7 @@ parseDnaSection = do
   return nucleotides
 
 -- | Parse a sequence from a PHD file.
-parseSequence :: A.Parser PhdSequence
+parseSequence :: (TokenParsing m, ParseConstraint m) => m PhdSequence
 parseSequence = do
   _ <- string "BEGIN_SEQUENCE "
   identifier' <- BL.pack <$> manyTill anyChar (try newline)
@@ -80,7 +81,7 @@ parseSequence = do
   return $ PhdSequence identifier' sequence'
 
 -- | Parses many sequences.
-parseSequences :: A.Parser [PhdSequence]
+parseSequences :: (TokenParsing m, ParseConstraint m) => m [PhdSequence]
 parseSequences = manyTill (spacesWithComments *> parseSequence <* spacesWithComments) eof
 
 -- | Parses sequences from a 'String'.

@@ -1,3 +1,4 @@
+{-# LANGUAGE ConstraintKinds #-}
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE TemplateHaskell #-}
 module Bio.Parse.Sequence.Fasta where
@@ -31,27 +32,27 @@ instance BioSeq FastaSequence where
 -- The header starts with a @>@ character and gets separated by @|@ (pipe)
 -- characters. When making use if 'Bio.Core.BioSeq', the first word of the
 -- header is used as the 'seqid'.
-parseHeader :: A.Parser [BL.ByteString]
+parseHeader :: ParseConstraint m => m [BL.ByteString]
 parseHeader = do
   _ <- char '>'
   fmap BL.pack <$> manyTill anyChar newline `sepBy1` char '|'
 
 -- | Parses an individual line of the sequence.
-parseSequenceLine :: A.Parser BL.ByteString
+parseSequenceLine :: ParseConstraint m => m BL.ByteString
 parseSequenceLine = do
   nucleotides <- some . choice $ [letter, char '*', char '-']
   _ <- newline
   return . BL.pack $ nucleotides
 
 -- | Parses an entire sequence including its header.
-parseSequence :: A.Parser FastaSequence
+parseSequence :: ParseConstraint m => m FastaSequence
 parseSequence = do
   h <- parseHeader
   nucleotides <- some parseSequenceLine
   return $ FastaSequence h (BL.concat nucleotides)
 
 -- | Parses many sequences.
-parseSequences :: A.Parser [FastaSequence]
+parseSequences :: ParseConstraint m => m [FastaSequence]
 parseSequences = manyTill parseSequence eof
 
 -- | Parses sequences from a 'String'.

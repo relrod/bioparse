@@ -1,3 +1,4 @@
+{-# LANGUAGE ConstraintKinds #-}
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE TemplateHaskell #-}
 module Bio.Parse.Sequence.FastQ where
@@ -13,7 +14,6 @@ import Data.List
 import Data.Typeable
 import Text.Parser.Char
 import Text.Parser.Combinators
-
 
 data FastQSequence = FastQSequence {
     _header   :: [BL.ByteString]
@@ -37,25 +37,25 @@ instance BioSeqQual FastQSequence where
 -- The header starts with a @\@@ character and follows with an optional
 -- description. When making use if 'Bio.Core.BioSeq', the first word of the
 -- header is used as the 'seqid'.
-parseHeader :: A.Parser [BL.ByteString]
+parseHeader :: ParseConstraint m => m [BL.ByteString]
 parseHeader = do
   _ <- char '@'
   fmap BL.pack <$> manyTill anyChar newline `sepBy1` char ':'
 
 -- | Parses the line of sequence data.
-parseSequenceLine :: A.Parser BL.ByteString
+parseSequenceLine :: ParseConstraint m => m BL.ByteString
 parseSequenceLine = do
   nucleotides <- some letter
   return . BL.pack $ nucleotides
 
 -- | Parses the line of quality data.
-parseQualityLine :: A.Parser BL.ByteString
+parseQualityLine :: ParseConstraint m => m BL.ByteString
 parseQualityLine = do
   qualityChars <- manyTill anyChar newline
   return . BL.pack $ qualityChars
 
 -- | Parses an entire sequence including its header and quality data.
-parseSequence :: A.Parser FastQSequence
+parseSequence :: ParseConstraint m => m FastQSequence
 parseSequence = do
   h <- parseHeader
   nucleotides <- parseSequenceLine
@@ -66,7 +66,7 @@ parseSequence = do
   return (FastQSequence h nucleotides qualityChars)
 
 -- | Parses many sequences.
-parseSequences :: A.Parser [FastQSequence]
+parseSequences :: ParseConstraint m => m [FastQSequence]
 parseSequences = manyTill parseSequence eof
 
 -- | Parses sequences from a 'String'.
