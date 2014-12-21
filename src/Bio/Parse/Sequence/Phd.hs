@@ -7,6 +7,7 @@ import Bio.Core.Sequence
 import Bio.Parse.Sequence.SequenceParser
 import Control.Applicative
 import Control.Lens
+import Control.Monad
 import qualified Data.Attoparsec.ByteString as A
 import qualified Data.ByteString.Char8 as B
 import qualified Data.ByteString.Lazy.Char8 as BL
@@ -47,7 +48,7 @@ parseComment = do
 
 -- | Treat comments as spaces.
 spacesWithComments :: ParseConstraint m => m ()
-spacesWithComments = skipSome $ choice [some space >> return (), parseComment >> return ()]
+spacesWithComments = skipSome $ choice [void (some space), void parseComment]
 
 -- | Parse a nucleotide line from a PHD file.
 parseNucleotide :: (TokenParsing m, ParseConstraint m) => m Nucleotide
