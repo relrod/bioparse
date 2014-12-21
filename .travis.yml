@@ -43,7 +43,9 @@ before_install:
 install:
   - $CABAL install --dependencies-only --enable-tests
   - $CABAL configure -flib-Werror --enable-tests $MODE
+  - $CABAL install hlint
 
 script:
   - $CABAL build
   - cabal test --show-details=always --test-option="--color=always"
+  - find src/ -name '*.hs' | xargs hlint
