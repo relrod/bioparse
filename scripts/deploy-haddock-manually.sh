@@ -5,6 +5,7 @@ cd "$cwd/.."
 f=`mktemp -d`
 git clone git@github.com:relrod/bioparse.git "$f/bioparse.git"
 cabal haddock
+cabal install --enable-bench
 pushd "$f/bioparse.git"
   git checkout gh-pages && git rm -rf *
 popd
