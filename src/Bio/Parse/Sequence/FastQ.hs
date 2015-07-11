@@ -3,14 +3,12 @@
 {-# LANGUAGE TemplateHaskell #-}
 module Bio.Parse.Sequence.FastQ where
 
-import Bio.Core.Sequence
 import Bio.Parse.Sequence.SequenceParser
 import Control.Applicative
 import Control.Lens
 import qualified Data.Attoparsec.ByteString as A
 import qualified Data.ByteString.Char8 as B
 import qualified Data.ByteString.Lazy.Char8 as BL
-import Data.List
 import Data.Typeable
 import Text.Parser.Char
 import Text.Parser.Combinators
@@ -22,15 +20,6 @@ data FastQSequence = FastQSequence {
   } deriving (Eq, Ord, Show, Typeable)
 
 makeLenses ''FastQSequence
-
-instance BioSeq FastQSequence where
-  seqid     = SeqLabel . head . _header
-  seqheader = SeqLabel . BL.concat . intersperse (BL.pack ":") . _header
-  seqdata   = SeqData . _sequence
-  seqlength = fromIntegral . BL.length . _sequence
-
-instance BioSeqQual FastQSequence where
-  seqqual = QualData . _quality
 
 -- | Parses the header of a FASTQ file.
 --

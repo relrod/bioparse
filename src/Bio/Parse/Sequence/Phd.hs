@@ -3,7 +3,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 module Bio.Parse.Sequence.Phd where
 
-import Bio.Core.Sequence
 import Bio.Parse.Sequence.SequenceParser
 import Control.Applicative
 import Control.Lens
@@ -30,12 +29,6 @@ data PhdSequence = PhdSequence {
   } deriving (Eq, Ord, Show, Typeable)
 
 makeLenses ''PhdSequence
-
-instance BioSeq PhdSequence where
-  seqid     = SeqLabel . _identifier
-  seqheader = SeqLabel . _identifier
-  seqdata   = SeqData . BL.pack . map _nucleotide . _sequence
-  seqlength = fromIntegral . length . _sequence
 
 -- | Parse a comment from a PHD file.
 --

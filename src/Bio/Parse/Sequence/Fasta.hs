@@ -3,7 +3,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 module Bio.Parse.Sequence.Fasta where
 
-import Bio.Core.Sequence
 import Bio.Parse.Sequence.SequenceParser
 import Control.Applicative
 import Control.Lens
@@ -20,12 +19,6 @@ data FastaSequence = FastaSequence {
   } deriving (Eq, Ord, Show, Typeable)
 
 makeLenses ''FastaSequence
-
-instance BioSeq FastaSequence where
-  seqid     = SeqLabel . head . _header
-  seqheader = SeqLabel . BL.concat . _header
-  seqdata   = SeqData . _sequence
-  seqlength = fromIntegral . BL.length . _sequence
 
 -- | Parses the header of a FASTA file.
 --
