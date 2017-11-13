@@ -31,8 +31,7 @@ parseHeader = do
 -- | Parses an individual line of the sequence.
 parseSequenceLine :: ParseConstraint m => m BL.ByteString
 parseSequenceLine = do
-  nucleotides <- some . choice $ [letter, char '*', char '-']
-  _ <- newline
+  nucleotides <- manyTill (choice [letter, char '*', char '-']) (try newline)
   return . BL.pack $ nucleotides
 
 -- | Parses an entire sequence including its header.
@@ -44,7 +43,7 @@ parseSequence' = do
 
 -- | Parses many sequences.
 parseSequences' :: ParseConstraint m => m [FastaSequence]
-parseSequences' = manyTill parseSequence eof
+parseSequences' = manyTill parseSequence' eof
 
 instance SequenceParser FastaSequence where
   parseSequence  = parseSequence'
