@@ -7,8 +7,6 @@ import Bio.Parse.Sequence.SequenceParser
 import Control.Applicative
 import Control.Lens
 import Control.Monad
-import qualified Data.Attoparsec.ByteString as A
-import qualified Data.ByteString.Char8 as B
 import qualified Data.ByteString.Lazy.Char8 as BL
 import Data.Typeable
 import Text.Parser.Char
@@ -64,8 +62,8 @@ parseDnaSection = do
   return nucleotides
 
 -- | Parse a sequence from a PHD file.
-parseSequence :: (TokenParsing m, ParseConstraint m) => m PhdSequence
-parseSequence = do
+parseSequence' :: (TokenParsing m, ParseConstraint m) => m PhdSequence
+parseSequence' = do
   _ <- string "BEGIN_SEQUENCE "
   identifier' <- BL.pack <$> manyTill anyChar (try newline)
   _ <- some newline
@@ -75,21 +73,11 @@ parseSequence = do
   return $ PhdSequence identifier' sequence'
 
 -- | Parses many sequences.
-parseSequences :: (TokenParsing m, ParseConstraint m) => m [PhdSequence]
-parseSequences = manyTill (spacesWithComments *> parseSequence <* spacesWithComments) eof
+parseSequences' :: (TokenParsing m, ParseConstraint m) => m [PhdSequence]
+parseSequences' = manyTill (spacesWithComments *> parseSequence <* spacesWithComments) eof
 
 -- | Parses sequences from a 'String'.
 --
---    @parsePhd = 'parsePhdB' . 'B.pack'@
-parsePhd :: String -> Either String [PhdSequence]
-parsePhd = parsePhdB . B.pack
-
--- | Parses sequences from a strict 'Data.ByteString.ByteString'.
---
---    @parsePhdB x = 'A.parseOnly' 'parseSequences' x@
-parsePhdB :: B.ByteString -> Either String [PhdSequence]
-parsePhdB = A.parseOnly parseSequences
-
 instance SequenceParser PhdSequence where
-  parseString     = parsePhd
-  parseByteString = parsePhdB
+  parseSequence  = parseSequence'
+  parseSequences = parseSequences'

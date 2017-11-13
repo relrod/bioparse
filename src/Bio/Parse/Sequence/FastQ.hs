@@ -6,8 +6,6 @@ module Bio.Parse.Sequence.FastQ where
 import Bio.Parse.Sequence.SequenceParser
 import Control.Applicative
 import Control.Lens
-import qualified Data.Attoparsec.ByteString as A
-import qualified Data.ByteString.Char8 as B
 import qualified Data.ByteString.Lazy.Char8 as BL
 import Data.Typeable
 import Text.Parser.Char
@@ -44,8 +42,8 @@ parseQualityLine = do
   return . BL.pack $ qualityChars
 
 -- | Parses an entire sequence including its header and quality data.
-parseSequence :: ParseConstraint m => m FastQSequence
-parseSequence = do
+parseSequence' :: ParseConstraint m => m FastQSequence
+parseSequence' = do
   h <- parseHeader
   nucleotides <- parseSequenceLine
   _ <- newline
@@ -55,21 +53,9 @@ parseSequence = do
   return (FastQSequence h nucleotides qualityChars)
 
 -- | Parses many sequences.
-parseSequences :: ParseConstraint m => m [FastQSequence]
-parseSequences = manyTill parseSequence eof
-
--- | Parses sequences from a 'String'.
---
---    @parseFastQ = 'parseFastQB' . 'B.pack'@
-parseFastQ :: String -> Either String [FastQSequence]
-parseFastQ = parseFastQB . B.pack
-
--- | Parses sequences from a strict 'Data.ByteString.ByteString'.
---
---    @parseFastQB x = 'A.parseOnly' 'parseSequences' x@
-parseFastQB :: B.ByteString -> Either String [FastQSequence]
-parseFastQB = A.parseOnly parseSequences
+parseSequences' :: ParseConstraint m => m [FastQSequence]
+parseSequences' = manyTill parseSequence eof
 
 instance SequenceParser FastQSequence where
-  parseString     = parseFastQ
-  parseByteString = parseFastQB
+  parseSequence  = parseSequence'
+  parseSequences = parseSequences'
