@@ -4,8 +4,10 @@ import Bio.Parse.Sequence.SequenceParser
 import qualified Bio.Parse.Sequence.Fasta as Fasta
 import qualified Bio.Parse.Sequence.FastQ as FastQ
 import qualified Bio.Parse.Sequence.Phd as Phd
+import Control.Applicative
 import Data.Attoparsec.ByteString (parseOnly)
 import qualified Data.ByteString.Char8 as B
+import Data.Monoid
 import Test.Tasty
 import Test.Tasty.HUnit
 import Text.Trifecta
