@@ -5,7 +5,6 @@ import qualified Bio.Parse.Sequence.FastQ as FastQ
 import qualified Bio.Parse.Sequence.Phd as Phd
 import qualified Bio.Sequence.Fasta as Biofasta
 import qualified Bio.Sequence.FastQ as BiofastQ
-import qualified Bio.Sequence.Phd as Biophd
 import Criterion.Main
 import qualified Data.ByteString.Char8 as B
 
@@ -47,9 +46,5 @@ main =
      [
         bench "Bio.Parse.Sequence.Phd.parsePhd" $ whnf Phd.parsePhd testphd's
       , bench "Bio.Parse.Sequence.Phd.parsePhdQ" $ whnf Phd.parsePhdB testphd'bs
-     ]
-  , bgroup "PHD/biophd"
-    [
-       bench "Bio.Sequence.PhdQ.readPhd" $ whnf Biophd.readPhd "bench/test.phd"
      ]
   ]

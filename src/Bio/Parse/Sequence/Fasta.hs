@@ -23,7 +23,7 @@ makeLenses ''FastaSequence
 -- | Parses the header of a FASTA file.
 --
 -- The header starts with a @>@ character and gets separated by @|@ (pipe)
--- characters. When making use if 'Bio.Core.BioSeq', the first word of the
+-- characters. When making use of 'Bio.Core.BioSeq', the first word of the
 -- header is used as the 'seqid'.
 parseHeader :: ParseConstraint m => m [BL.ByteString]
 parseHeader = do

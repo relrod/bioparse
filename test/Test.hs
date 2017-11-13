@@ -11,7 +11,7 @@ main = defaultMain tests
 tests :: TestTree
 tests = testGroup "Tests" [fastaUnitTests]
 
-fastaTest = ">KM034562v1\
+fastaTest = ">KM034562v1\n\
              \CGGACACACAAAAAGAAAGAAGAATTTTTAGGATCTTTTGTGTGCGAATA\n\
              \ACTATGAGGAAGATTAATAATTTTCCTCTCATTGAAATTTATATCGGAAT\n\
              \TTAAATTGAAATTGTTACTGTAATCATACCTGGTTTGTTTCAGAGCCATA\n\
