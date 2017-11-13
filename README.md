@@ -1,5 +1,7 @@
 # bioparse
 
+[![Build Status](https://travis-ci.org/relrod/bioparse.svg?branch=master)](https://travis-ci.org/relrod/bioparse)
+
 **NOTE: Don't use this yet!**
 
 This is a collection of parsers built on modern tooling (`parsers`,
@@ -12,6 +14,8 @@ with the very basics of bioinformatics.
 
 Because of that, you probably don't want to use this library, and should, at least
 for now, use pre-existing libraries such as biofasta.
+
+Silly benchmarks here: https://relrod.github.io/bioparse/benchmarks.html
 
 ## License
 
