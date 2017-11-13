@@ -12,6 +12,7 @@ category:            Bioinformatics, Data
 build-type:          Simple
 -- extra-source-files:
 cabal-version:       >= 1.10
+tested-with:         GHC == 7.8.4, GHC == 7.10.2, GHC == 8.0.2
 
 library
   exposed-modules:     Bio.Parse.Sequence.Fasta
