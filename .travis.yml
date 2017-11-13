@@ -47,5 +47,5 @@ install:
 
 script:
   - $CABAL build
-  - cabal test --show-details=always --test-option="--color=always"
+  - cabal test --show-details=streaming --test-option="--color=always"
   - find src/ -name '*.hs' | xargs hlint
