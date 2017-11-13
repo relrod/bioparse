@@ -20,8 +20,7 @@ library
                      , Bio.Parse.Sequence.SequenceParser
   -- other-modules:
   -- other-extensions:
-  build-depends:       attoparsec >= 0.11 && < 0.14
-                     , base >= 4 && < 5
+  build-depends:       base >= 4 && < 5
                      , bytestring >= 0.10 && < 0.11
                      , lens >= 4.4 && < 5
                      , parsers >= 0.12.1 && < 0.13

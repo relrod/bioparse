@@ -1,8 +1,6 @@
 {-# LANGUAGE ConstraintKinds #-}
 module Bio.Parse.Sequence.SequenceParser where
 
-import qualified Data.ByteString.Char8 as B
-
 import Text.Parser.Char
 import Text.Parser.Token
 
