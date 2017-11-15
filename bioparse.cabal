@@ -7,7 +7,7 @@ license:             BSD2
 license-file:        LICENSE
 author:              Ricky Elrod
 maintainer:          ricky@elrod.me
--- copyright:
+copyright:           (c) 2017 Ricky Elrod
 category:            Bioinformatics, Data
 build-type:          Simple
 -- extra-source-files:
